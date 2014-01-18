@@ -656,21 +656,6 @@ static void an30259a_set_led_blink(enum an30259a_led_enum led,
 	if (brightness > LED_MAX_CURRENT)
 		brightness = LED_MAX_CURRENT;
 
-	if (led == LED_R)
-		LED_DYNAMIC_CURRENT = LED_R_CURRENT;
-	else if (led == LED_G)
-		LED_DYNAMIC_CURRENT = LED_G_CURRENT;
-	else if (led == LED_B)
-		LED_DYNAMIC_CURRENT = LED_B_CURRENT;
-
-	/* In user case, LED current is restricted */
-	if (led_intensity == 0 || led_intensity == 40) {	// if stock intesity is used (see LED_x_CURRENT = 0x28)
-		brightness = (brightness * LED_DYNAMIC_CURRENT) / LED_MAX_CURRENT;
-	}
-	else if (led_intensity != 0) {	// adapt current to led_intensity
-		brightness = (brightness * led_intensity) / LED_MAX_CURRENT;
-	}
-
 	if (led_enable_fade_charging == 1)
 	{
 		if (led_time_on)
@@ -713,12 +698,12 @@ static void an30259a_set_led_blink(enum an30259a_led_enum led,
 			led_step_speed1, led_step_speed2, led_step_speed3, led_step_speed4);
 	}
 	else {
-		leds_set_slope_mode(client, led, 0, 15, 15, 0,
+		leds_set_slope_mode(client, led, 0, 15, 7, 0,
 			(delay_on_time + AN30259A_TIME_UNIT - 1) /
 			AN30259A_TIME_UNIT,
 			(delay_off_time + AN30259A_TIME_UNIT - 1) /
 			AN30259A_TIME_UNIT,
-			0, 0, 0, 0);
+			1, 1, 1, 1);
 	}
 }
 
